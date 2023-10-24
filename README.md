@@ -5,12 +5,12 @@
 ## Project Description
 
 ## Usage
-- Begin by running the following python commands in a terminal:
-```
-pip install -q pydicom  # -q means quiet
-```
-These install the necessary packages to our project
-* pydicom -> for reading dcm image formats
+* Begin by running the following python commands in a terminal:
+  ```
+  pip install -q pydicom  # -q means quiet
+  ```
+  These install the necessary packages to our project:
+    * pydicom -> for reading dcm image formats
 
 ## Test Run
 
