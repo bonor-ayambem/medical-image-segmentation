@@ -2,7 +2,29 @@
 
 ## Purpose
 
+The purpose of this project is to compare different segmentation techniques
+for CT Scan of Lungs and Airways.
+
+Image segmentation involves dividing an image into continuous regions or sets 
+of pixels/voxels.
+
 ## Project Description
+
+The segmentation methods implemented are hybrid segmentation and region growing.
+
+Region-based segmentation is a process in image processing and computer vision that
+involves dividing an image into meaningful and coherent regions or objects.
+These regions are typically composed of pixels or voxels that share similar properties,
+such as intensity, color, or texture.
+
+Hybrid segmentation is an approach to image segmentation that combines multiple 
+segmentation methods or techniques to improve the accuracy and robustness of the 
+segmentation results.
+
+Both of these methods are carried out on dicom files for a
+high-resolution CT image.
+The CT image given is single subject but saved slice by slice in DICOM format 
+(where each slice is 2D). 
 
 ## Usage
 
@@ -15,6 +37,7 @@
   These install the necessary packages to our project:
     * pydicom -> for reading dcm image formats
     * skimage -> for image processing functions
+* Run `python main_hybrid.py`
 
 ### For Region Growing
 * Begin by running the following python commands in a terminal:
@@ -25,6 +48,7 @@
   These install the necessary packages to our project:
     * SimpleITK > for medical image segmentation and registration
     * 
+* Run `python main_region.py`
 
 ## Test Run
 
