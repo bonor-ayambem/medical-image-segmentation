@@ -1,14 +1,6 @@
+import numpy as np
 import pydicom
 import os
-import numpy as np
-from glob import glob
-
-data_path = "CT-CASE15"
-g = glob(data_path + '/*')
-
-# Print out the first 5 file names to verify we're in the right folder.
-print("Total of %d DICOM images.\nFirst 5 filenames:" % len(g))
-print('\n'.join(g[:5]))
 
 # Load medical image slices from 'path' directory, and return them in 'slices'
 def load_scan(path):
@@ -48,7 +40,4 @@ def get_pixels_hu(scans):
     image += np.int16(intercept)
 
     return np.array(image, dtype=np.int16)
-
-patient = load_scan(data_path)
-img = get_pixels_hu(patient)
 
