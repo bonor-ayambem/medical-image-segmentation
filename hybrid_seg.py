@@ -6,7 +6,6 @@ from skimage import measure
 import matplotlib.pyplot as plt
 
 
-
 #Standardize the pixel values
 def make_lungmask(img, display=False):
     row_size= img.shape[0]

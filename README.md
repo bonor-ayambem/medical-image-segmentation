@@ -5,8 +5,8 @@
 ## Project Description
 
 ## Usage
-The two different segmentation methods implemented are 
 
+### For Hybrid Segmentation
 * Begin by running the following python commands in a terminal:
   ```
   pip install -q pydicom  # -q means quiet
@@ -15,6 +15,16 @@ The two different segmentation methods implemented are
   These install the necessary packages to our project:
     * pydicom -> for reading dcm image formats
     * skimage -> for image processing functions
+
+### For Region Growing
+* Begin by running the following python commands in a terminal:
+  ```
+  pip install -q SimpleITK  # -q means quiet
+  pip install -q tabulate
+  ```
+  These install the necessary packages to our project:
+    * SimpleITK > for medical image segmentation and registration
+    * 
 
 ## Test Run
 

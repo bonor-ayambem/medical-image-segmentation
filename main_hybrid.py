@@ -46,8 +46,6 @@ plt.ylabel("Frequency")
 plt.savefig("vox_histogram")
 
 
-
-
 # print("Shape before resampling\t", img_to_process.shape)
 img_after_resamp, spacing = hybrid_seg.resample(img_to_process, patient, [1,1,1])
 # print("Shape after resampling\t", img_after_resamp.shape)
@@ -59,6 +57,7 @@ img_target = ndimage.rotate(img_after_resamp, 180, reshape=False)
 img_target = img_target.transpose(2,1,0)
 
 fiber = img_target[260]
+
 hybrid_seg.make_lungmask(fiber, display=True)
 
 # does global and percentile count as two?
