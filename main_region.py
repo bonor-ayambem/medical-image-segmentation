@@ -65,8 +65,20 @@ imgSmooth = SimpleITK.CurvatureFlow(image1=imgSlice, timeStep=0.125, numberOfIte
 
 sitk_show(imgSmooth, "region2", title="smoothing")
 
+# Set both lower and upper thresholds
+# threshold_lower = -50  # Define your lower threshold
+# threshold_upper = 225  # Define your upper threshold
+threshold_lower = -1100  # Define your lower threshold
+threshold_upper = -300 
 
-lstSeeds = [(100,75)]
+# Threshold the image to identify potential seed points within the specified range
+imgThreshold = (imgSmooth >= threshold_lower) & (imgSmooth <= threshold_upper)
+
+# Save the thresholded image
+sitk_show(imgThreshold, "thresholded_image.png", title="Thresholded Image")
+
+
+lstSeeds = [(150,75)]
 
 # point_acquisition_interface = gui.PointDataAquisition(img_Smooth, window_level=(1050,500))
 # #preselected seed point in the left ventricle  
@@ -81,61 +93,61 @@ imgSmoothInt = SimpleITK.Cast(SimpleITK.RescaleIntensity(imgSmooth), imgWhiteMat
 # Use 'LabelOverlay' to overlay 'imgSmooth' and 'imgWhiteMatter'
 sitk_show(SimpleITK.LabelOverlay(imgSmoothInt, imgWhiteMatter), "region3")
 
-# imgWhiteMatterNoHoles = SimpleITK.VotingBinaryHoleFilling(image1=imgWhiteMatter, radius=[2]*3, majorityThreshold=1, backgroundValue=0, foregroundValue=labelWhiteMatter)
+imgWhiteMatterNoHoles = SimpleITK.VotingBinaryHoleFilling(image1=imgWhiteMatter, radius=[2]*3, majorityThreshold=1, backgroundValue=0, foregroundValue=labelWhiteMatter)
 
-# sitk_show(SimpleITK.LabelOverlay(imgSmoothInt, imgWhiteMatterNoHoles), "region4")
+sitk_show(SimpleITK.LabelOverlay(imgSmoothInt, imgWhiteMatterNoHoles), "region4")
 
-# lstSeeds = [(119, 83), (198, 80), (185, 102), (164, 43)]
+lstSeeds = [(119, 83), (198, 80), (185, 102), (164, 43)]
 
-# imgGrayMatter = SimpleITK.ConnectedThreshold(image1=imgSmooth, seedList=lstSeeds, lower=150, upper=270, replaceValue=labelGrayMatter)
+imgGrayMatter = SimpleITK.ConnectedThreshold(image1=imgSmooth, seedList=lstSeeds, lower=150, upper=270, replaceValue=labelGrayMatter)
 
-# imgGrayMatterNoHoles = SimpleITK.VotingBinaryHoleFilling(image1=imgGrayMatter, radius=[2]*3, majorityThreshold=1, backgroundValue=0, foregroundValue=labelGrayMatter)
+imgGrayMatterNoHoles = SimpleITK.VotingBinaryHoleFilling(image1=imgGrayMatter, radius=[2]*3, majorityThreshold=1, backgroundValue=0, foregroundValue=labelGrayMatter)
 
-# sitk_show(SimpleITK.LabelOverlay(imgSmoothInt, imgGrayMatterNoHoles), "region5")
+sitk_show(SimpleITK.LabelOverlay(imgSmoothInt, imgGrayMatterNoHoles), "region5")
 
-# #### **Merge Two Label-Fields**
-# imgLabels = imgWhiteMatterNoHoles | imgGrayMatterNoHoles
+#### **Merge Two Label-Fields**
+imgLabels = imgWhiteMatterNoHoles | imgGrayMatterNoHoles
 
-# sitk_show(SimpleITK.LabelOverlay(imgSmoothInt, imgLabels), "Region6")
+sitk_show(SimpleITK.LabelOverlay(imgSmoothInt, imgLabels), "Region6")
 
 
-# #### **Refine Segmentation**
+#### **Refine Segmentation**
 
-# # Create image mask (boolean) containing only the common regions of the two labels
-# imgMask = (imgWhiteMatterNoHoles/labelWhiteMatter) * (imgGrayMatterNoHoles/labelGrayMatter)
-# print(imgMask.GetPixelIDTypeAsString())
+# Create image mask (boolean) containing only the common regions of the two labels
+imgMask = (imgWhiteMatterNoHoles/labelWhiteMatter) * (imgGrayMatterNoHoles/labelGrayMatter)
+print(imgMask.GetPixelIDTypeAsString())
 
-# # transform image to UInt8 type to match
-# imgMask = SimpleITK.Cast(imgMask, SimpleITK.sitkUInt8)
+# transform image to UInt8 type to match
+imgMask = SimpleITK.Cast(imgMask, SimpleITK.sitkUInt8)
 
-# # Remove common regions from WhiteMatter segment
-# imgWhiteMatterNoHoles -= imgMask * labelWhiteMatter
+# Remove common regions from WhiteMatter segment
+imgWhiteMatterNoHoles -= imgMask * labelWhiteMatter
 
-# # Bitwise OR combination of the white matter and gray matter labels after refinement
-# imgLabels = imgWhiteMatterNoHoles + imgGrayMatterNoHoles
+# Bitwise OR combination of the white matter and gray matter labels after refinement
+imgLabels = imgWhiteMatterNoHoles + imgGrayMatterNoHoles
 
-# # Use 'LabelOverlay' to overlay 'imgSmooth' and 'imgLabels'
-# sitk_show(SimpleITK.LabelOverlay(imgSmoothInt, imgLabels), "region7")
+# Use 'LabelOverlay' to overlay 'imgSmooth' and 'imgLabels'
+sitk_show(SimpleITK.LabelOverlay(imgSmoothInt, imgLabels), "region7")
 
-# #### **Display Edge-Only Contours**
+#### **Display Edge-Only Contours**
 
-# sitk_show(SimpleITK.LabelOverlay(imgSmoothInt, SimpleITK.LabelContour(imgLabels)), "region8")
+sitk_show(SimpleITK.LabelOverlay(imgSmoothInt, SimpleITK.LabelContour(imgLabels)), "region8")
 
-# # Compute statistics for imgSmooth
-# LabelStatistics = SimpleITK.LabelStatisticsImageFilter()
-# LabelStatistics.Execute(imgSmoothInt, SimpleITK.Cast(imgLabels, SimpleITK.sitkInt8))
-# count_pixel = LabelStatistics.GetCount(1)
-# img_mean = LabelStatistics.GetMean(1)
-# img_var = LabelStatistics.GetVariance(1)
-# img_max = LabelStatistics.GetMaximum(1)
-# img_min = LabelStatistics.GetMinimum(1)
+# Compute statistics for imgSmooth
+LabelStatistics = SimpleITK.LabelStatisticsImageFilter()
+LabelStatistics.Execute(imgSmoothInt, SimpleITK.Cast(imgLabels, SimpleITK.sitkInt8))
+count_pixel = LabelStatistics.GetCount(1)
+img_mean = LabelStatistics.GetMean(1)
+img_var = LabelStatistics.GetVariance(1)
+img_max = LabelStatistics.GetMaximum(1)
+img_min = LabelStatistics.GetMinimum(1)
 
-# import tabulate
-# from tabulate import tabulate
-# print(tabulate([['Count', count_pixel], ['Mean', img_mean], 
-#                 ['Variance', img_var], ['Max', img_max], ['Min', img_min]],
-#                 headers=['Name', 'Value'], tablefmt='orgtbl', numalign='left'))
+import tabulate
+from tabulate import tabulate
+print(tabulate([['Count', count_pixel], ['Mean', img_mean], 
+                ['Variance', img_var], ['Max', img_max], ['Min', img_min]],
+                headers=['Name', 'Value'], tablefmt='orgtbl', numalign='left'))
 
-# #### **Save Results**
-# # save segmentation result to file
-# SimpleITK.WriteImage(imgLabels, "MRIsegLabels.mhd")
+#### **Save Results**
+# save segmentation result to file
+SimpleITK.WriteImage(imgLabels, "MRIsegLabels.mhd")

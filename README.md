@@ -52,6 +52,12 @@ The CT image given is single subject but saved slice by slice in DICOM format
 
 ## Test Run
 
+* Dowload data of a CT scan as .dicom files and import them to the project directory
+* Run `python main_hybrid.py` and `python main_region.py` to run hybrid segmentation and 
+region-growing respectievly on the image data
+* Results are generated in .png files located in the project directory
+* For this example, the CT scan use is CT-CASE15
+
 ## Author
 
 ### Bonor Ayambem
